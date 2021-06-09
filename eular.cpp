@@ -34,6 +34,7 @@ int main (){
 		y=y0+v0*dt;
 		u=u0;
 		v=v0-g*dt;
+		printf("a")
 
 		x0=x;
 		y0=y;
