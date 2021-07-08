@@ -1,8 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <utility>
+
+using std::endl;
+using std::ofstream;
 
 #define N     50               /* 分割数   */
-#define NEND  2000             /* ループ数 */
+#define NEND  3000             /* ループ数 */
 #define NSAVE 200              /* 出力間隔 */
 #define L     1.0              /* 棒の長さ */
 #define TEMP0 1500.0             /* 初期温度 */
@@ -15,20 +22,20 @@ int main(void)
 {
   int i, n;
   double temp[N+1], temp1[N+1];
-  double kappa, dt, dx;
+  double a, dt, dx;
   char fname[256];
   FILE *fp;
   /* i       空間座標カウンタ
      n       時間カウンタ
      temp[]  温度
      temp1[] 温度(一時保存用)
-     kappa   熱拡散率
+     a   熱拡散率
      dt      時間刻み
      dx      空間刻み
      fname[] ファイル名
      fp      ファイルポインタ   */
 
-  kappa = K;                             /* 熱拡散率の設定 */
+  a = K;                             /* 熱拡散率の設定 */
   dt = DT;                               /* 時間刻みの設定 */
   dx = L / N;                            /* 空間刻みの設定 */
   for(i = 0; i <= N; i++) temp[i]=1500.0;  /* 初期温度の設定 */
@@ -36,24 +43,31 @@ int main(void)
   if((fp = fopen("kekka000.csv","wt")) == NULL) exit(1);
   for(i = 0; i <= N; i++) fprintf(fp, "%g,%g\n", dx * i, temp[i]);
 fclose(fp);
-
+ofstream ofs("kakusann_eular2.csv");
   for(n = 0; n < NEND; n++)
   {
     temp[0] = TEMPL;                 /* 左の境界条件の設定 */
     temp[N] = TEMPR;                 /* 右の境界条件の設定 */
     /* 差分法(完全陽解法)による温度の計算 */
     for(i = 1; i < N; i++) 
-      temp1[i] = temp[i] 
-        + kappa * dt * (temp[i+1] - 2 * temp[i] + temp[i-1]) / (dx * dx); 
+      temp1[i] = temp[i] + a * dt * (temp[i+1] - 2 * temp[i] + temp[i-1]) / (dx * dx); 
+ 
     /* 温度の更新 */
     for(i = 1; i < N; i++) temp[i] = temp1[i];
-    if((n + 1) % NSAVE == 0)
+
+          if((n + 1) % NSAVE == 0)
 {
+  
+
+ 
+
       /* 途中結果のファイルへの出力 */
       sprintf(fname,"kekka%03d.csv",(n + 1) / NSAVE);
 if((fp = fopen(fname,"wt")) == NULL) exit(1);
       for(i = 0; i <= N; i++) fprintf(fp, "%g,%g\n", dx * i, temp[i]);
 fclose(fp);
-    }
+    
+}
   }
+
 }

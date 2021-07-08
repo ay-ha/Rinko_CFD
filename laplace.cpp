@@ -2,6 +2,7 @@
 #include <math.h>
 #include <iostream>
 #include <fstream>
+#include <array>
 
 #define maxx 40                         /* number of grid points */
 #define maxy 40                         /* number of grid points */
@@ -10,19 +11,21 @@
 int main()
 {
 
-    double p[maxx][maxy], pnew;
+    double pnew;
     int i, j, iter;
     double dx,dy;
     dx = L / maxx;
     dy = L / maxy;
 
+    std::array<std::array<double,maxx>,maxy> arr;
+    //arr.fill(0.0);
     std::ofstream outputfile("laplace.csv");
 
     for(i=0; i<maxx; i++)                 /* clear the array  */
     {
         for (j=0; j<maxy; j++) 
         {
-            p[i][j] = 0;
+            arr[i][j] = 0;
         }
     }
 
@@ -30,10 +33,10 @@ int main()
     {
         for(j=0; j<maxy; j++)
         {
-            p[i][0] = 100.0;        /* p[i][0] = 100 V */  
-            p[0][j] = 100.0;
-            p[i][39] = 100.0;
-            p[39][j] = 100.0;
+            arr[i][0] = 100.0;        /* p[i][0] = 100 V */  
+            arr[0][j] = 100.0;
+            arr[i][maxx-1] = 100.0;
+            arr[maxx-1][j] = 100.0;
         }
     }
     
@@ -43,12 +46,12 @@ int main()
         {
             for(j=1; j<(maxy-1); j++)               /* y-direction */
             {
-                pnew = (p[i+1][j]+p[i-1][j]+p[i][j+1]+p[i][j-1])/4;
-                p[i][j] = pnew; 
+                pnew = (arr[i+1][j]+arr[i-1][j]+arr[i][j+1]+arr[i][j-1])/4;
+                arr[i][j] = pnew; 
             }
         }
     }  
-    for(i = 1; i <= maxx; i++)
+    for(i = 0; i < maxx; i++)
     {
         outputfile << dx*i << ",";
     }
@@ -58,7 +61,7 @@ int main()
         outputfile << dy*j << ",";
         for (i=0; i<maxx; i++) 
         {
-             outputfile << p[i][j] << ",";
+             outputfile << arr[i][j] << ",";
          } 
         outputfile << std::endl;      /* empty line for gnuplot */
     }

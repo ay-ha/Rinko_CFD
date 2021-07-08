@@ -56,6 +56,7 @@ int main (){
 	for(j=0;j<=Nt;j++){
 		// ofs << x[10] <<","<< t[j] <<","<< T[10][j] << endl;
 		printf("x=%lf,t=%lf,%lf\n",x[5],t[j],T[5][j]);
+		ofs << x[5] <<","<< t[j] <<","<< T[5][j] << endl;
 	}
 	
 
